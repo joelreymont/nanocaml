@@ -1,0 +1,6 @@
+(library
+ (name nanocaml)
+ (public_name ppx_nanocaml)
+ (kind ppx_rewriter)
+ (libraries batteries ppxlib)
+ (preprocess no_preprocessing))

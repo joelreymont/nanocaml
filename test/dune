@@ -1,0 +1,5 @@
+(test
+ (name test_main)
+ (libraries ounit nanocaml)
+ (preprocess
+  (pps nanocaml ppxlib.metaquot)))
