@@ -1,5 +1,6 @@
 open Batteries
 open Ppxlib
+module Loc = Location
 open Astlib
 
 type 'a loc = 'a Asttypes.loc
@@ -8,7 +9,7 @@ type fun_arg = Asttypes.arg_label * expression option * pattern
 (** represents a nanopass definition **)
 type np_pass =
   { npp_name : string
-  ; npp_loc : Location.t
+  ; npp_loc : Loc.t
   ; npp_input : Lang.np_language (* source language *)
   ; npp_output : Lang.np_language (* target language *)
   ; npp_pre :
@@ -210,9 +211,7 @@ let pass_of_value_binding = function
     let find_lang ~loc l =
       Lang.find_language
         l
-        ~exn:
-          (Location.Error
-             (Location.raise_errorf ~loc "Pass: language %S has not been defined" l))
+        ~exn:(Loc.Error (Loc.Error.createf ~loc "language %S has not been defined" l))
     in
     let l0, l1 =
       match pass_attr.attr_payload with
