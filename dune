@@ -2,4 +2,6 @@
  (name pp)
  (modules pp)
  (modes exe byte)
- (libraries nanocaml ppxlib))
+ (libraries nanocaml ppxlib ppxlib.metaquot)
+ (preprocess
+  (pps ppxlib.metaquot)))

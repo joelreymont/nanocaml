@@ -25,21 +25,26 @@ let expr_function_cases e =
   match e.pexp_desc with
   | Pexp_function (_, _, _) as cases -> cases
   | _ -> raise (Failure "incorrect expression accessor")
-
+;;
 
 let test_L0 =
+  let loc = Location.none in
   stri_mod_bind
-    [%stri module Test_L0 = struct
-       type a = [ `A of b | `A0 ]
-       and b = [ `B of a ]
-     end]
+    [%stri
+      module Test_L0 = struct
+        type a =
+          [ `A of b
+          | `A0
+          ]
+
+        and b = [ `B of a ]
+      end]
   |> Nanocaml.Lang.language_of_module
+;;
 
 let test_L0_a = Nanocaml.Lang.language_nonterm test_L0 "a"
 let test_L0_b = Nanocaml.Lang.language_nonterm test_L0 "b"
-
-let () =
-  Hashtbl.add Nanocaml.Lang.languages "Test_L0" test_L0
+let () = Hashtbl.add Nanocaml.Lang.languages "Test_L0" test_L0
 
 let tt =
   "parsing"
@@ -370,11 +375,11 @@ let tt =
        |> pass_of_value_binding
      with
      | { npp_name = "remove_a"
-       ; npp_input = li
-       ; npp_output = lo
-       ; npp_pre = pre
+       ; npp_input = _li
+       ; npp_output = _lo
+       ; npp_pre = _pre
        ; npp_post = { pexp_desc = Pexp_ident { txt = Lident "a"; _ }; _ }
-       ; npp_procs = [ a_proc ]
+       ; npp_procs = [ _a_proc ]
        ; _
        } -> ()
      | _ -> assert_failure "pass has wrong structure")

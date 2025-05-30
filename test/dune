@@ -1,5 +1,26 @@
 (test
  (name test_main)
- (libraries ounit nanocaml)
+ (libraries ounit nanocaml ppxlib ppxlib.metaquot)
  (preprocess
   (pps nanocaml ppxlib.metaquot)))
+
+(rule
+ (package ppx_nanocaml)
+ (alias runtest)
+ (enabled_if
+  (>= %{ocaml_version} "4.14.0"))
+ (deps
+  (:test
+   docs_example.ml
+   expand_tests.ml
+   parsing_tests.ml
+   pass_typecheck_tests.ml
+   lang_codegen_tests.ml
+   pass_codegen_tests.ml)
+  (package ppxlib))
+ (action
+  (chdir
+   %{project_root}
+   (progn
+    (run expect-test %{test})
+    (diff? %{test} %{test}.corrected)))))

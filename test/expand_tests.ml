@@ -3,7 +3,7 @@ open OUnit2
 (* everything in this file should compile *)
 let tt = "expand_tests" >::: []
 
-module%language Lfirst = struct
+module%lang Lfirst = struct
   type a = [ `A of int * int ]
 
   and b =
@@ -15,7 +15,7 @@ end
 let x : Lfirst.a = `A (1, 2)
 let y : Lfirst.b = `B x
 
-module%language Lsecond = struct
+module%lang Lsecond = struct
   include Lfirst
 
   type b =
@@ -24,11 +24,11 @@ module%language Lsecond = struct
     }
 end
 
-module%language L0 = struct
+module%lang L0 = struct
   type nt = [ `Pairs of (int * string) list ]
 end
 
-module%language L1 = struct
+module%lang L1 = struct
   type nt = [ `Lists of int list * string list ]
 end
 
@@ -45,7 +45,7 @@ let[@pass L0 => L1] split nt0 =
 *)
 
 let[@pass L0 => L1] split =
-  let rec nt = function
+  let nt = function
     | `Pairs ((x, y) [@l]) -> `Lists (x, y)
   in
   nt

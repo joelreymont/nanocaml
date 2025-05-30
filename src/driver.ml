@@ -15,7 +15,7 @@ let expand_language ~ctxt node =
 let gen_language =
   let pattern = Ast_pattern.(pstr __) in
   Extension.V3.declare
-    "language.language"
+    "nanocaml.lang"
     Extension.Context.structure_item
     pattern
     expand_language
@@ -25,7 +25,7 @@ let gen_language =
 let expand_pass ~ctxt node =
   let loc = Expansion_context.Extension.extension_point_loc ctxt in
   match node with
-  (* let%pass[@ ...] pass_x = ... *)
+  (* let%conv[@from ...] pass_x = ... *)
   | [ ({ pvb_attributes = _; _ } as vb) ] ->
     let pass = Pass.pass_of_value_binding vb |> Pass_typeck.typeck_pass in
     let vb' = Pass_codegen.gen_pass_vb pass in
@@ -36,16 +36,17 @@ let expand_pass ~ctxt node =
 let gen_pass =
   let pattern = Ast_pattern.(pstr (pstr_value nonrecursive __ ^:: nil)) in
   Extension.V3.declare
-    "language.pass"
+    "nanocaml.conv"
     Extension.Context.structure_item
     pattern
     expand_pass
   |> Context_free.Rule.extension
 ;;
 
-(* let () = Driver.register_transformation ~rules:[ gen_language; gen_pass ] "language" *)
+let () = Driver.register_transformation ~rules:[ gen_language; gen_pass ] "nanocaml"
 
-let rewriter =
+(*
+   let rewriter =
   object
     inherit Ast_traverse.map as super
 
@@ -83,3 +84,4 @@ let rewriter =
 ;;
 
 let () = Driver.register_transformation ~impl:rewriter#structure "language"
+*)

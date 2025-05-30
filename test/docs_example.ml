@@ -27,7 +27,7 @@ let is_primitive id =
     ]
 ;;
 
-module%language L0 = struct
+module%lang L0 = struct
   type expr =
     [ `Var of string
     | `Primitive of string
@@ -42,7 +42,7 @@ module%language L0 = struct
     ]
 end
 
-module%language L1 = struct
+module%lang L1 = struct
   include L0
 
   type expr =
@@ -60,7 +60,7 @@ module%language L1 = struct
     }
 end
 
-let[@pass L0 => L0] check_primitives =
+let%conv[@from L0 => L0] check_primitives =
   let exception Unknown_primitive of string in
   [%passes
     let[@entry] rec expr = function
@@ -69,7 +69,7 @@ let[@pass L0 => L0] check_primitives =
     ;;]
 ;;
 
-let[@pass L0 => L1] make_explicit =
+let%conv[@from L0 => L1] make_explicit =
   [%passes
     let[@entry] rec expr = function
       | `If1 ((p [@r]), (e [@r])) -> `If (p, e, `Apply (`Primitive "void", []))
